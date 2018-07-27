@@ -5,7 +5,7 @@ from core.models import (
     UserFeedback, CHECKIN, CHECKOUT, AssetStatus, AllocationHistory,
     AssetCategory, AssetSubCategory, AssetType, AssetModelNumber, AssetMake,
     AssetCondition, AssetIncidentReport, AssetSpecs, OfficeBlock,
-    OfficeFloor, OfficeFloorSection
+    OfficeFloor, OfficeFloorSection, OfficeWorkspace
 )
 
 
@@ -76,11 +76,11 @@ class AssetSerializer(serializers.ModelSerializer):
             return None
 
     def get_asset_category(self, obj):
-        return obj.model_number.make_label.asset_type.\
+        return obj.model_number.make_label.asset_type. \
             asset_sub_category.asset_category.category_name
 
     def get_asset_sub_category(self, obj):
-        return obj.model_number.make_label.asset_type.\
+        return obj.model_number.make_label.asset_type. \
             asset_sub_category.sub_category_name
 
     def get_make_label(self, obj):
@@ -404,7 +404,7 @@ class AssetSpecsSerializer(serializers.ModelSerializer):
 class OfficeBlockSerializer(serializers.ModelSerializer):
     class Meta:
         model = OfficeBlock
-        fields = ("name", "id", )
+        fields = ("name", "id",)
 
 
 class OfficeFloorSerializer(serializers.ModelSerializer):
@@ -418,3 +418,18 @@ class OfficeFloorSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = OfficeFloorSection
         fields = ("name", "floor", "id")
+
+
+class OfficeWorkspaceSerializer(serializers.ModelSerializer):
+    floor = serializers.SerializerMethodField()
+    block = serializers.SerializerMethodField()
+
+    class Meta:
+        model = OfficeWorkspace
+        fields = ("id", "name", "section", "floor", "block")
+
+    def get_floor(self, obj):
+        return obj.section.floor.number
+
+    def get_block(self, obj):
+        return obj.section.floor.block.name
