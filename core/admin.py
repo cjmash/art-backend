@@ -14,6 +14,7 @@ from .models.asset import (
     AllocationHistory,
     AssetIncidentReport,
     AssetSpecs)
+from .models.department import Department
 from .models.user import SecurityUser, UserFeedback
 from .models.officeblock import OfficeBlock, OfficeFloorSection, OfficeFloor
 
@@ -28,7 +29,7 @@ admin.site.register(
         AssetModelNumber,
         AssetLog,
         AssetIncidentReport,
-        AssetSpecs, OfficeBlock
+        AssetSpecs, OfficeBlock,
     ]
 )
 
@@ -150,6 +151,10 @@ class OfficeFloorSectionAdmin(admin.ModelAdmin):
     list_display = ('name', 'floor')
 
 
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'created_at', 'last_modified')
+
+
 admin.site.register(Asset, AssetAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(SecurityUser, SecurityUserAdmin)
@@ -159,3 +164,4 @@ admin.site.register(AllocationHistory, AllocationHistoryAdmin)
 admin.site.register(AssetCondition, AssetConditionAdmin)
 admin.site.register(OfficeFloor, OfficeFloorAdmin)
 admin.site.register(OfficeFloorSection, OfficeFloorSectionAdmin)
+admin.site.register(Department, DepartmentAdmin)

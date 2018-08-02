@@ -7,6 +7,7 @@ from core.models import (
     AssetCondition, AssetIncidentReport, AssetSpecs, OfficeBlock,
     OfficeFloor, OfficeFloorSection
 )
+from core.models.department import Department
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -418,3 +419,10 @@ class OfficeFloorSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = OfficeFloorSection
         fields = ("name", "floor", "id")
+
+
+class DepartmentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Department
+        fields = ("name", "id", )
