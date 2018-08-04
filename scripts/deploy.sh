@@ -36,7 +36,7 @@ buildAndTagDockerImages() {
 
 patch() {
 echo  "patching image"
-kubectl patch deployment production-art-backend -p  {"spec":{"template":{"spec":{"initContainers":[{"name":"run-migrations","image":"$IMAGE_NAME"}]}}}} --namespace $NAMESPACE
+kubectl patch deployment production-art-backend -p  '{"spec":{"template":{"spec":{"initContainers":[{"name":"run-migrations","image":"$IMAGE_NAME"}]}}}}' --namespace $NAMESPACE
 }
 BRANCH_NAME=$CIRCLE_BRANCH
 # set the deployment environment
