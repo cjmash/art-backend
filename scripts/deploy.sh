@@ -6,7 +6,6 @@ DEPLOY_SCRIPT_PATH="${HOME}/deploy"
 curl -o $DEPLOY_SCRIPT_PATH https://raw.githubusercontent.com/AndelaOSP/bash-helper-modules/master/k8s/deploy
 
 source $DEPLOY_SCRIPT_PATH
-
 CURRENTIPS=""
 DOCKER_REGISTRY=gcr.io
 GCLOUD_SERVICE_KEY_NAME=gcloud-service-key.json
