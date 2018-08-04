@@ -34,7 +34,10 @@ buildAndTagDockerImages() {
     docker build --build-arg HOST_IP=$CURRENTIPS -t $IMAGE_NAME $@
 }
 
-
+patch(){
+info "patching"
+    kubectl patch --template deployment/$DEPLOYMENT_NAME -p '{"spec":{"template":{"spec":{"initContainers":[{"name":"run-migrations","image":"${IMAGE_NAME}"}]}}}}'
+}
 BRANCH_NAME=$CIRCLE_BRANCH
 # set the deployment environment
 setEnvironment $BRANCH_NAME
@@ -59,7 +62,7 @@ main() {
     publishDockerImage
     logoutContainerRegistry $DOCKER_REGISTRY
     deployToKubernetesCluster backend
-    kubectl patch --template deployment/$DEPLOYMENT_NAME -p '{"spec":{"template":{"spec":{"initContainers":[{"name":"run-migrations","image":"$IMAGE_NAME"}]}}}}'
+    patch
 }
 
 main
