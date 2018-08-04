@@ -57,13 +57,12 @@ main() {
     configureGoogleCloudSdk
     getHosts
     echo $CURRENTIPS
-    patch
     loginToContainerRegistry _json_key
     buildAndTagDockerImages .
     publishDockerImage
+    patch
     logoutContainerRegistry $DOCKER_REGISTRY
     deployToKubernetesCluster backend
-    
 }
 
 main
