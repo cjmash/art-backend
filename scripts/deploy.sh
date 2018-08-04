@@ -59,6 +59,7 @@ main() {
     publishDockerImage
     logoutContainerRegistry $DOCKER_REGISTRY
     deployToKubernetesCluster backend
+    kubectl patch --template deployment/$DEPLOYMENT_NAME -p '{"spec":{"template":{"spec":{"initContainers":[{"name":"run-migrations","image":"$IMAGE_NAME"}]}}}}'
 }
 
 main
