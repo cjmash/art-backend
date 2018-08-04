@@ -53,6 +53,7 @@ main() {
     authWithServiceAccount
     configureGoogleCloudSdk
     getHosts
+    echo $CURRENTIPS
     loginToContainerRegistry _json_key
     buildAndTagDockerImages .
     publishDockerImage
