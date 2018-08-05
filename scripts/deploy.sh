@@ -19,9 +19,14 @@ require 'PROJECT_NAME' $PROJECT_NAME
 require 'GOOGLE_PROJECT_ID' $GOOGLE_PROJECT_ID
 require 'DOCKER_REGISTRY' $DOCKER_REGISTRY
 require 'GCLOUD_SERVICE_KEY' $GCLOUD_SERVICE_KEY
+
 getHosts(){ 
     echo "============> geting hosts "
-      CURRENTIPS="$(gcloud compute instances list --project bench-projects | grep  gke-bench- | awk -v ORS=, '{if ($4) print $4}' | sed 's/,$//')"
+    if [ "$CIRCLE_BRANCH" == 'get' ]; then
+      CURRENTIPS="$(gcloud compute instances list --project bench-projects | grep  gke-bench-production-default-pool | awk -v ORS=, '{if ($4) print $4}' | sed 's/,$//')"
+    else
+      CURRENTIPS="$(gcloud compute instances list --project bench-projects | grep  gke-bench-staging-default-pool | awk -v ORS=, '{if ($4) print $4}' | sed 's/,$//')"
+    fi
 }
 
 buildAndTagDockerImages() {
@@ -33,7 +38,7 @@ buildAndTagDockerImages() {
 patch() {
 echo  "patching image"
 kubectl patch deployment $DEPLOYMENT_NAME -p  '{"spec":{"template":{"spec":{"initContainers":[{"name":"run-migrations","image":"'${IMAGE_NAME}'"}]}}}}' --namespace $NAMESPACE
-kubectl set env deployment/production-art-backend HOST_IP=$CURRENTIPS -n production
+kubectl set env deployment/$DEPLOYMENT_NAME HOST_IP=$CURRENTIPS -n $NAMESPACE
 }
 BRANCH_NAME=$CIRCLE_BRANCH
 # set the deployment environment
