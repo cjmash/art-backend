@@ -1,6 +1,6 @@
 from .base import *  # noqa: F403,F401
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS += [  # noqa ignore=F405
     'art-api.andela.com'
