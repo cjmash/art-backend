@@ -21,11 +21,8 @@ require 'DOCKER_REGISTRY' $DOCKER_REGISTRY
 require 'GCLOUD_SERVICE_KEY' $GCLOUD_SERVICE_KEY
 getHosts(){ 
     echo "============> geting hosts "
-    if [ "$CIRCLE_BRANCH" == 'master' ]; then
-      CURRENTIPS="$(gcloud compute instances list --project bench-projects | grep  gke-bench-production-default-pool | awk -v ORS=, '{if ($4) print $4}' | sed 's/,$//')"
-    else
-      CURRENTIPS="$(gcloud compute instances list --project bench-projects | grep  gke-bench-staging-default-pool | awk -v ORS=, '{if ($4) print $4}' | sed 's/,$//')"
-    fi
+    
+      CURRENTIPS="$(gcloud compute instances list --project bench-projects | grep  gke-bench- | awk -v ORS=, '{if ($4) print $4}' | sed 's/,$//')"
 }
 
 buildAndTagDockerImages() {
@@ -34,6 +31,10 @@ buildAndTagDockerImages() {
     docker build --build-arg HOST_IP=$CURRENTIPS -t $IMAGE_NAME $@
 }
 
+patch() {
+echo  "patching image"
+kubectl patch deployment $DEPLOYMENT_NAME -p  '{"spec":{"template":{"spec":{"initContainers":[{"name":"run-migrations","image":"'${IMAGE_NAME}'"}]}}}}' --namespace $NAMESPACE
+}
 
 BRANCH_NAME=$CIRCLE_BRANCH
 # set the deployment environment
@@ -56,6 +57,7 @@ main() {
     loginToContainerRegistry _json_key
     buildAndTagDockerImages .
     publishDockerImage
+    patch
     logoutContainerRegistry $DOCKER_REGISTRY
     deployToKubernetesCluster backend
 }
